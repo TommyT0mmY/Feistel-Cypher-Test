@@ -5,8 +5,10 @@ subkeys = []
 
 
 def main():
-    print(FeistelFunction(0b101010, 0b111000))
-    #print("subkeys", subkeys)
+    #print(FeistelFunction(0b101010, 0b100010))
+    genSubkeys("aaa")
+    #genSBox()
+    print("subkeys", subkeys)
     #print(FeistelStep(*(1, 2, ), 3))
 
 
@@ -57,8 +59,8 @@ def FeistelFunction(number, key):
         # print(external, middle, parts[i])
     # print(total)
 
-    sump0p1 = format(int(parts[0], base=2) + int(parts[1], base=2), "06b")[:6] # part0 + part1 (if it generates a carry it excludes the lsb)
-    result = format(int(sump0p1, base=2) ^ int(parts[2], base=2), "06b") #(part0 + part1) xor part3
+    sump0p1 = (int(parts[0], base=2) + int(parts[1], base=2)) % 2**6 # part0 + part1 modulo 2^6
+    result = format(sump0p1 ^ int(parts[2], base=2), "06b") #(part0 + part1) xor part3
 
     return result
 
