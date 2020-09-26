@@ -1,11 +1,12 @@
 import re
 import secrets
+import random
 
 subkeys = []
 
 
 def main():
-    #genSubkeys("aaa")
+    genSubkeys("aaa")
     #genSBox()
     #print("subkeys", subkeys)
     #print(FeistelStep(*(1, 2, ), 3))
@@ -72,7 +73,12 @@ def genSBox():
     return
 
 def genSubkeys(key):
-    return
+    iteration = 0
+    for currchar in key:
+        currbin = format(CharToInt(currchar), "06b")
+        random.seed(CharToInt(currchar) + iteration, version=2)
+        print(random.randint(0, 63))
+        iteration+=2
 
 
 
