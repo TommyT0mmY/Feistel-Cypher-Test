@@ -5,10 +5,9 @@ subkeys = []
 
 
 def main():
-    #print(FeistelFunction(0b101010, 0b100010))
-    genSubkeys("aaa")
+    #genSubkeys("aaa")
     #genSBox()
-    print("subkeys", subkeys)
+    #print("subkeys", subkeys)
     #print(FeistelStep(*(1, 2, ), 3))
 
 
@@ -45,7 +44,7 @@ def FeistelFunction(number, key):
     # 0000 xxxx 0000 total[4:8:]
     # 0000 0000 xxxx total[8:] 
     parts = [total[:4], total[4:8:], total[8:]] #splitting total in 3 equal 4bit parts
-    sboxes = [ #3 sboxes (for each part) generated with secure random methods
+    sboxes = [ #3 sboxes (for each part)
         [['110110', '010010', '010101', '011010'], ['111100', '110110', '100011', '010101'], ['100000', '011001', '111011', '110001'], ['010000', '000011', '010110', '000001']],
         [['010110', '110010', '100000', '010000'], ['101000', '101101', '010100', '101110'], ['001001', '101010', '010011', '000100'], ['001001', '111011', '111000', '010110']],
         [['100100', '010110', '010011', '110000'], ['100001', '010011', '110001', '100100'], ['001101', '011101', '110110', '111000'], ['010111', '000100', '100000', '110110']]
@@ -53,7 +52,7 @@ def FeistelFunction(number, key):
 
     for i in range(3): #swapping parts with their S-box results
         external = parts[i][0] + parts[i][3:]   #x00x
-        middle = parts[i][2:4:]                 #0xx0
+        middle = parts[i][1:3:]                 #0xx0
 
         parts[i] = sboxes[i][int(external, base=2)][int(middle, base=2)]
         # print(external, middle, parts[i])
