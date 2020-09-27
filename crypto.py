@@ -5,7 +5,7 @@ import random
 subkeys = []
 
 def main():
-    print(CharToInt(","))
+    return
 
 def CharToInt(chr):
     if re.match("[a-z]", chr):
@@ -16,6 +16,8 @@ def CharToInt(chr):
         return 52
     if re.match("[0-9]", chr):
         return ord(chr) + 5
+    if re.match(",", chr):
+        return ord(chr) + 19
 
 def IntToChar(int):
     if (int <= 25):
@@ -26,6 +28,8 @@ def IntToChar(int):
         return ' '
     if (int <= 62):
         return chr(int - 5)
+    if (int == 63):
+        return ','
 
 def FeistelStep(left, right, subkey):
     newleft = right
