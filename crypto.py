@@ -6,9 +6,9 @@ subkeys = []
 
 
 def main():
-    genSubkeys("aaa")
+    genSubkeys("aba")
     #genSBox()
-    #print("subkeys", subkeys)
+    print("subkeys", subkeys)
     #print(FeistelStep(*(1, 2, ), 3))
 
 
@@ -74,11 +74,16 @@ def genSBox():
 
 def genSubkeys(key):
     iteration = 0
+    charcount = 0
     for currchar in key:
-        currbin = format(CharToInt(currchar), "06b")
-        random.seed(CharToInt(currchar) + iteration, version=2)
-        print(random.randint(0, 63))
-        iteration+=2
+        random.seed(currchar)
+        charcount += random.randint(0, 1000)
+    for currchar in key:
+        iteration+=1
+        random.seed(CharToInt(currchar) + iteration + charcount, version=2)
+        subkeys.append(random.randint(0, 63))
+        subkeys.append(random.randint(0, 63))
+        
 
 
 
