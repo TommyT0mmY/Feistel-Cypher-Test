@@ -4,13 +4,8 @@ import random
 
 subkeys = []
 
-
 def main():
-    genSubkeys("aba")
-    #genSBox()
-    print("subkeys", subkeys)
-    #print(FeistelStep(*(1, 2, ), 3))
-
+    print(CharToInt(","))
 
 def CharToInt(chr):
     if re.match("[a-z]", chr):
@@ -19,6 +14,8 @@ def CharToInt(chr):
         return ord(chr) - 65 + 26
     if re.match(" ", chr):
         return 52
+    if re.match("[0-9]", chr):
+        return ord(chr) + 5
 
 def IntToChar(int):
     if (int <= 25):
@@ -27,18 +24,15 @@ def IntToChar(int):
         return chr(int + 39)
     if (int == 52):
         return ' '
-
-
+    if (int <= 62):
+        return chr(int - 5)
 
 def FeistelStep(left, right, subkey):
     newleft = right
     newright = 0
 
-
-
     return (newleft, newright, )
     
-
 def FeistelFunction(number, key):
     total = format(number, "06b") + format(key, "06b") #12bit number composed by the number and the key
     # xxxx 0000 0000 total[:4]
@@ -83,9 +77,6 @@ def genSubkeys(key):
         random.seed(CharToInt(currchar) + iteration + charcount, version=2)
         subkeys.append(random.randint(0, 63))
         subkeys.append(random.randint(0, 63))
-        
-
-
 
 
 if __name__ == "__main__":
