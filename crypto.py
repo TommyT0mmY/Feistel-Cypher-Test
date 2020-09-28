@@ -1,7 +1,8 @@
 import re
 import secrets
 import random
-from PyInquirer import prompt, print_json #pip install PyInquirer
+import msvcrt
+from PyInquirer import prompt #pip install PyInquirer
 
 subkeys = []
 
@@ -35,23 +36,38 @@ def main():
     correct = False
     while (not correct):
         secret_key_answers = prompt(secret_key_questions)
-        if (secret_key_answers['secret_key'] == secret_key_answers['secret_key_confirmation']):
+        if (len(secret_key_answers['secret_key']) != 0 and secret_key_answers['secret_key'] == secret_key_answers['secret_key_confirmation'] and re.match("[a-zA-Z0-9]| |,", secret_key_answers['secret_key'])):
             correct = True
         else:
-            print("The secret key does not match, retry\n")
+            print("The secret key does not match or is invalid, retry\n")
     secret_key = secret_key_answers['secret_key']
     print('\n')
-        
+
+    #Getting the text
+    text = ""
+    stop = False
+    while not stop:
+        currchar = msvcrt.getch().decode("utf-8", "replace")
+        if CharToInt(currchar) == None:
+            stop = True
+        else:
+            print(currchar, end='', flush=True)
+            text += currchar
+
     #Generating subkeys
     genSubkeys(secret_key)
-    
 
-    
-    
-    
-    
-    feistel = RunFeistel(*('a', 'b', ), encrypt) #encrypt is true if the user is encrypting otherwise it's false if decrypting
-    print(feistel)
+    print("\nProcessing...")
+
+    #Formatting the text and processing
+    processed_text = ""
+    if len(text) % 2 != 0:
+        text += ' '
+    for charindex in range(0, len(text), 2):
+        feistel = RunFeistel(text[charindex], text[charindex+1], encrypt) #encrypt is true if the user is encrypting otherwise it's false if decrypting
+        processed_text += feistel[0] + feistel[1]
+        
+    print(processed_text)
     
     return
 
@@ -92,9 +108,9 @@ def RunFeistel(left, right, encrypt):
     for currsubkey in keyorder:
         functresult = FeistelFunction(right, currsubkey)
         xorresult = int(functresult, base=2) ^ left
-        #print (functresult, xorresult, left, right, currsubkey)
+        #print (functresult, xorresult, left, right, currsubkey) #debug
         left, right = right, xorresult
-        #print(left, right)
+        #print(left, right) #debug
 
     left, right = right, left
     return (IntToChar(left), IntToChar(right), )
