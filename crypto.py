@@ -1,10 +1,58 @@
 import re
 import secrets
 import random
+from PyInquirer import prompt, print_json #pip install PyInquirer
 
 subkeys = []
 
+mode_question = [
+    {
+        'type': 'list',
+        'name': 'mode',
+        'message': 'Select a mode',
+        'choices': ['Encrypt', 'Decrypt']
+    }]
+secret_key_questions = [
+    {
+        'type': 'password',
+        'name': 'secret_key',
+        'message': 'Enter the secret key'
+    },
+    {
+        'type': 'password',
+        'name': 'secret_key_confirmation',
+        'message': 'Confirm the secret key'
+    }]
+
 def main():
+    #Asking mode
+    encrypt = False
+    mode = prompt(mode_question)['mode']
+    if (mode == 'Encrypt'):
+        encrypt = True
+
+    #Getting secret key
+    correct = False
+    while (not correct):
+        secret_key_answers = prompt(secret_key_questions)
+        if (secret_key_answers['secret_key'] == secret_key_answers['secret_key_confirmation']):
+            correct = True
+        else:
+            print("The secret key does not match, retry\n")
+    secret_key = secret_key_answers['secret_key']
+    print('\n')
+        
+    #Generating subkeys
+    genSubkeys(secret_key)
+    
+
+    
+    
+    
+    
+    feistel = RunFeistel(*('a', 'b', ), encrypt) #encrypt is true if the user is encrypting otherwise it's false if decrypting
+    print(feistel)
+    
     return
 
 def CharToInt(chr):
@@ -31,11 +79,25 @@ def IntToChar(int):
     if (int == 63):
         return ','
 
-def FeistelStep(left, right, subkey):
-    newleft = right
-    newright = 0
+def RunFeistel(left, right, encrypt):
+    global subkeys
 
-    return (newleft, newright, )
+    left = CharToInt(left)
+    right = CharToInt(right)
+
+    keyorder = subkeys
+    if (encrypt == False):
+        keyorder = keyorder[::-1]
+
+    for currsubkey in keyorder:
+        functresult = FeistelFunction(right, currsubkey)
+        xorresult = int(functresult, base=2) ^ left
+        #print (functresult, xorresult, left, right, currsubkey)
+        left, right = right, xorresult
+        #print(left, right)
+
+    left, right = right, left
+    return (IntToChar(left), IntToChar(right), )
     
 def FeistelFunction(number, key):
     total = format(number, "06b") + format(key, "06b") #12bit number composed by the number and the key
@@ -71,6 +133,8 @@ def genSBox():
     return
 
 def genSubkeys(key):
+    global subkeys
+    subkeys = []
     iteration = 0
     charcount = 0
     for currchar in key:
