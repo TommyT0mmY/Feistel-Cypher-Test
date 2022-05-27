@@ -162,5 +162,6 @@ def genSubkeys(key):
         subkeys.append(random.randint(0, 63))
         subkeys.append(random.randint(0, 63))
 
+
 if __name__ == "__main__":
     main()
